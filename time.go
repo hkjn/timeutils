@@ -10,6 +10,8 @@ import (
 	"time"
 )
 
+var stdLayout = "2006-01-02 15:04"
+
 // MustLoadLoc loads the time.Location specified by the string, or panics.
 func MustLoadLoc(l string) *time.Location {
 	loc, err := time.LoadLocation(l)
@@ -19,9 +21,22 @@ func MustLoadLoc(l string) *time.Location {
 	return loc
 }
 
+// Must panics if error is non-nil.
+func Must(t time.Time, err error) time.Time {
+	if err != nil {
+		log.Fatalf("got err: %v\n", err)
+	}
+	return t
+}
+
+// ParseStd parses the value using a standard layout.
+func ParseStd(value string) (time.Time, error) {
+	return time.Parse(stdLayout, value)
+}
+
 // daysIn returns the number of days in a month for a given year.
 func daysIn(m time.Month, year int) int {
-	// This is equivalent to time.daysIn(m, year).o
+	// This is equivalent to the unexported time.daysIn(m, year).
 	return time.Date(year, m+1, 0, 0, 0, 0, 0, time.UTC).Day()
 }
 
