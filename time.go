@@ -60,12 +60,12 @@ func StartOfWeek(t time.Time) time.Time {
 }
 
 // GetWeek describes the week + year as a string, given week offset.
-func GetWeek(offset int, loc *time.Location) string {
+func GetWeek(offset int, weekFmt string, loc *time.Location) string {
 	now := time.Now().In(loc)
 	fromTs := StartOfWeek(now.AddDate(0, 0, 7*offset))
 	toTs := fromTs.AddDate(0, 0, 6)
 	_, w := fromTs.ISOWeek()
-	return fmt.Sprintf("Week %d (%s — %s)", w, fromTs.Format("Jan 2 2006"), toTs.Format("Jan 2 2006"))
+	return fmt.Sprintf("Week %d (%s — %s)", w, fromTs.Format(weekFmt), toTs.Format(weekFmt))
 }
 
 // GetWeekOffset parses the week offset from current, which is 0.
