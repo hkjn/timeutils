@@ -2,7 +2,6 @@
 package timeutils
 
 import (
-	"errors"
 	"fmt"
 	"log"
 	"strconv"
@@ -29,7 +28,7 @@ func Must(t time.Time, err error) time.Time {
 	return t
 }
 
-// ParseStd parses the value using a standard layout.
+// ParseStd parses the value using a standard layout, with time.UTC timezone.
 func ParseStd(value string) (time.Time, error) {
 	return time.Parse(stdLayout, value)
 }
@@ -61,8 +60,10 @@ func StartOfWeek(t time.Time) time.Time {
 
 // Parse extracts time from string-based info, with some constraints.
 //
-// The described time cannot be in the future, or more than 1000 years in the past
-func Parse(year string, month string, day string, hourMinute string, loc *time.Location) (time.Time, error) {
+// The described time cannot be in the future, or more than 1000 years in the past.
+//
+// Note that month is 0-indexed, unlike time.Month.
+func Parse(year, month, day, hourMinute string, loc *time.Location) (time.Time, error) {
 	now := time.Now().In(loc)
 
 	y64, err := strconv.ParseInt(year, 10, 0)
@@ -71,46 +72,49 @@ func Parse(year string, month string, day string, hourMinute string, loc *time.L
 		return time.Time{}, err
 	}
 	if y < now.Year()-1000 {
-		return time.Time{}, errors.New(fmt.Sprintf("bad year; %d is too far in the past", y))
+		return time.Time{}, fmt.Errorf("bad year; %d is too far in the past", y)
 	}
 	m, err := strconv.ParseInt(month, 10, 0)
 	if err != nil {
 		return time.Time{}, err
 	}
 	if m < 0 || m > 11 {
-		return time.Time{}, errors.New(fmt.Sprintf("bad month: %d", m))
+		return time.Time{}, fmt.Errorf("bad month: %d is not within [0, 11]", m)
 	}
+	// Month +1 since time.Month is [1, 12].
+	m = m + 1
 	d64, err := strconv.ParseInt(day, 10, 0)
 	d := int(d64)
 	if err != nil {
 		return time.Time{}, err
 	}
-	if d < 1 || d > daysIn(time.Month(m), y) {
-		return time.Time{}, errors.New(fmt.Sprintf("bad day: %d", d))
+	if d < 1 {
+		return time.Time{}, fmt.Errorf("bad day: %d; can't be negative", d)
+	} else if d > daysIn(time.Month(m), y) {
+		return time.Time{}, fmt.Errorf("bad day: %d; only %d days in %v, %d", d, daysIn(time.Month(m), y), time.Month(m), y)
 	}
 	parts := strings.Split(hourMinute, ":")
 	if len(parts) != 2 {
-		return time.Time{}, errors.New(fmt.Sprintf("bad hour/minute: %s", hourMinute))
+		return time.Time{}, fmt.Errorf("bad hour/minute: %s", hourMinute)
 	}
 	h, err := strconv.ParseInt(parts[0], 10, 0)
 	if err != nil {
 		return time.Time{}, err
 	}
 	if h < 0 || h > 60 {
-		return time.Time{}, errors.New(fmt.Sprintf("bad hour: %d", h))
+		return time.Time{}, fmt.Errorf("bad hour: %d", h)
 	}
 	min, err := strconv.ParseInt(parts[1], 10, 0)
 	if err != nil {
 		return time.Time{}, err
 	}
 	if min < 0 || min > 60 {
-		return time.Time{}, errors.New(fmt.Sprintf("bad minute: %d", min))
+		return time.Time{}, fmt.Errorf("bad minute: %d", min)
 	}
 
-	// Month is +1 since time.Month is [1, 12].
-	t := time.Time(time.Date(int(y), time.Month(m+1), int(d), int(h), int(min), 0, 0, loc))
+	t := time.Time(time.Date(int(y), time.Month(m), int(d), int(h), int(min), 0, 0, loc))
 	if t.After(now) {
-		return time.Time{}, errors.New(fmt.Sprintf("bad time; %v is in the future", time.Time(t)))
+		return time.Time{}, fmt.Errorf("bad time; %v is in the future", time.Time(t))
 	}
 	return t, nil
 }
