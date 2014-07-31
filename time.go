@@ -21,6 +21,9 @@ func MustLoadLoc(l string) *time.Location {
 }
 
 // Must panics if error is non-nil.
+//
+// Intended use is to wrap function calls that must succeed, e.g:
+//   t := Must(ParseStd("2013-07-31"))
 func Must(t time.Time, err error) time.Time {
 	if err != nil {
 		log.Fatalf("got err: %v\n", err)
