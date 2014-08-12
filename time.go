@@ -9,11 +9,17 @@ import (
 	"time"
 )
 
-var stdLayout = "2006-01-02 15:04"
+var (
+	StdLayout     = "2006-01-02 15:04" // a simple time layout
+	EmptyTimeZone = TimeZone("")       // the empty timezone
+)
+
+// TimeZone is a string that can be given to time.LoadLocation.
+type TimeZone string
 
 // MustLoadLoc loads the time.Location specified by the string, or panics.
-func MustLoadLoc(l string) *time.Location {
-	loc, err := time.LoadLocation(l)
+func MustLoadLoc(tz TimeZone) *time.Location {
+	loc, err := time.LoadLocation(string(tz))
 	if err != nil {
 		log.Fatal("bad location: %v\n", err)
 	}
@@ -33,7 +39,7 @@ func Must(t time.Time, err error) time.Time {
 
 // ParseStd parses the value using a standard layout, with time.UTC timezone.
 func ParseStd(value string) (time.Time, error) {
-	return time.Parse(stdLayout, value)
+	return time.Parse(StdLayout, value)
 }
 
 // daysIn returns the number of days in a month for a given year.

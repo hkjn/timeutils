@@ -23,25 +23,24 @@ func TestWeekday(t *testing.T) {
 	}
 }
 
-type ParseInput struct {
-	year, month, day, hourMinute string
-	loc                          *time.Location
-}
-
 func TestParse(t *testing.T) {
 	// Note that Parse takes 0-indexed month.
-	// TODO: test error handling.
-	cases := map[ParseInput]time.Time{
-		ParseInput{"2013", "06", "31", "23:59", time.UTC}: Must(ParseStd("2013-07-31 23:59")),
-		ParseInput{"2013", "05", "30", "23:59", time.UTC}: Must(ParseStd("2013-06-30 23:59")),
+	// TODO: test error handling?
+	cases := []struct {
+		year, month, day, hourMinute string
+		loc                          *time.Location
+		want                         time.Time
+	}{
+		{"2013", "06", "31", "23:59", time.UTC, Must(ParseStd("2013-07-31 23:59"))},
+		{"2013", "05", "30", "23:59", time.UTC, Must(ParseStd("2013-06-30 23:59"))},
 	}
-	for in, exp := range cases {
-		out, err := Parse(in.year, in.month, in.day, in.hourMinute, in.loc)
+	for _, tt := range cases {
+		got, err := Parse(tt.year, tt.month, tt.day, tt.hourMinute, tt.loc)
 		if err != nil {
-			t.Fatalf("Parse(%v) got err %v\n", in, err)
+			t.Fatalf("Parse(%q, %q, %q, %q, %v) got err %v\n", tt.year, tt.month, tt.day, tt.hourMinute, tt.loc, err)
 		}
-		if exp != out {
-			t.Fatalf("Parse(%v) was %v; want %v\n", in, out, exp)
+		if got != tt.want {
+			t.Fatalf("Parse(%q, %q, %q, %q, %v) = %v; want %v\n", tt.year, tt.month, tt.day, tt.hourMinute, got, tt.want)
 		}
 	}
 }
