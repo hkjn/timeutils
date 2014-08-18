@@ -17,11 +17,28 @@ var (
 // TimeZone is a string that can be given to time.LoadLocation.
 type TimeZone string
 
+// Day describes a specific day and can be used as map keys.
+type Day struct {
+	Year, Day int
+	Month     time.Month
+}
+
+// FromTime parses a day object from a time.
+func (d *Day) FromTime(t time.Time) {
+	year, month, day := t.Date()
+	*d = Day{year, day, month}
+}
+
+// ToTime returns the time object representing the start of the day.
+func (d Day) ToTime() time.Time {
+	return time.Date(d.Year, d.Month, d.Day, 0, 0, 0, 0, time.UTC)
+}
+
 // MustLoadLoc loads the time.Location specified by the string, or panics.
 func MustLoadLoc(tz TimeZone) *time.Location {
 	loc, err := time.LoadLocation(string(tz))
 	if err != nil {
-		log.Fatal("bad location: %v\n", err)
+		log.Fatalf("bad location %v: %v\n", tz, err)
 	}
 	return loc
 }
