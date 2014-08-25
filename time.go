@@ -21,17 +21,28 @@ type TimeZone string
 type Day struct {
 	Year, Day int
 	Month     time.Month
+	TimeZone  TimeZone
 }
 
-// FromTime parses a day object from a time.
-func (d *Day) FromTime(t time.Time) {
+// DayFromTime returns the equivalent day object from time.
+func DayFromTime(t time.Time) Day {
 	year, month, day := t.Date()
-	*d = Day{year, day, month}
+	return Day{year, day, month, TimeZone(t.Location().String())}
 }
 
 // ToTime returns the time object representing the start of the day.
 func (d Day) ToTime() time.Time {
-	return time.Date(d.Year, d.Month, d.Day, 0, 0, 0, 0, time.UTC)
+	return time.Date(d.Year, d.Month, d.Day, 0, 0, 0, 0, MustLoadLoc(d.TimeZone))
+}
+
+// String returns a description of the day object.
+func (d Day) String() string {
+	return d.ToTime().Format("2006-01-02 MST")
+}
+
+// String returns a description of the day object without the TZ.
+func (d Day) ShortString() string {
+	return d.ToTime().Format("2006-01-02")
 }
 
 // MustLoadLoc loads the time.Location specified by the string, or panics.
@@ -52,6 +63,11 @@ func Must(t time.Time, err error) time.Time {
 		log.Fatalf("got err: %v\n", err)
 	}
 	return t
+}
+
+// AsMillis returns the number of milliseconds (in offset by sec) for the time.
+func AsMillis(t time.Time, offset int) int {
+	return int(t.UTC().UnixNano()/1000000) + offset*1000
 }
 
 // ParseStd parses the value using a standard layout, with time.UTC timezone.
