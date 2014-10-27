@@ -49,9 +49,18 @@ func (d Day) ShortString() string {
 func MustLoadLoc(tz TimeZone) *time.Location {
 	loc, err := time.LoadLocation(string(tz))
 	if err != nil {
-		log.Fatalf("bad location %v: %v\n", tz, err)
+		log.Fatalf("bad location %q: %v\n", tz, err)
 	}
 	return loc
+}
+
+// MustParseDuration returns the time.Duration specified by the string, or panics.
+func MustParseDuration(s string) time.Duration {
+	d, err := time.ParseDuration(s)
+	if err != nil {
+		log.Fatalf("bad duration %q: %v\n", s, err)
+	}
+	return d
 }
 
 // Must panics if error is non-nil.
@@ -194,5 +203,18 @@ func (s *Selector) Create(from time.Time) {
 	}
 	for i := 1; i <= 12; i++ {
 		s.Months[i-1] = time.Month(i)
+	}
+}
+
+// DescDuration returns a human-readable string describing the duration.
+func DescDuration(d time.Duration) string {
+	if d < time.Minute {
+		return fmt.Sprintf("%0.1f sec ago", d.Seconds())
+	} else if d < time.Hour {
+		return fmt.Sprintf("%0.1f min ago", d.Minutes())
+	} else if d < time.Hour*24 {
+		return fmt.Sprintf("%0.1f hrs ago", d.Hours())
+	} else {
+		return fmt.Sprintf("%0.1f days ago", d.Hours()/24.0)
 	}
 }

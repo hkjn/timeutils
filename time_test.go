@@ -92,3 +92,27 @@ func TestStartOfWeek(t *testing.T) {
 		}
 	}
 }
+
+func TestDescDuration(t *testing.T) {
+	cases := map[time.Duration]string{
+		time.Millisecond:                 "0.0 sec ago",
+		time.Millisecond * 49:            "0.0 sec ago",
+		time.Millisecond * 50:            "0.1 sec ago",
+		time.Second:                      "1.0 sec ago",
+		time.Millisecond * 500:           "0.5 sec ago",
+		time.Second * 59:                 "59.0 sec ago",
+		time.Second*60 - 1:               "60.0 sec ago",
+		time.Second*60 + 1:               "1.0 min ago",
+		time.Minute:                      "1.0 min ago",
+		time.Minute * 60:                 "1.0 hrs ago",
+		time.Hour*24 - 1:                 "24.0 hrs ago",
+		time.Hour * 24:                   "1.0 days ago",
+		time.Hour*24*10e4 + time.Hour*12: "100000.5 days ago",
+	}
+	for in, exp := range cases {
+		out := DescDuration(in)
+		if exp != out {
+			t.Fatalf("DescDuration(%v) => %q; want %q\n", in, out, exp)
+		}
+	}
+}
