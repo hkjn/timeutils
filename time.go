@@ -1,5 +1,5 @@
 // Package timeutils provides some convenience functions around time.
-package timeutils
+package timeutils // import "hkjn.me/timeutils"
 
 import (
 	"fmt"
