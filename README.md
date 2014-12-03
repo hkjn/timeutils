@@ -1,6 +1,6 @@
 timeutils
 =========
 
-Timeutils provides some convenience functions around time.
+Package timeutils provides some convenience functions around time.
 
-See docs at http:///hkjn.me/timeutils.
+See docs at http://hkjn.me/timeutils.
