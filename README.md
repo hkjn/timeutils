@@ -3,4 +3,4 @@ timeutils
 
 Timeutils provides some convenience functions around time.
 
-See docs at http://godoc.org/hkjn.me/timeutils.
+See docs at http:///hkjn.me/timeutils.
