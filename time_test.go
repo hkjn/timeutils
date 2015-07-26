@@ -6,19 +6,43 @@ import (
 )
 
 func TestWeekday(t *testing.T) {
-	cases := map[time.Weekday]int{
-		time.Monday:    0,
-		time.Tuesday:   1,
-		time.Wednesday: 2,
-		time.Thursday:  3,
-		time.Friday:    4,
-		time.Saturday:  5,
-		time.Sunday:    6,
+	cases := []struct {
+		in   time.Weekday
+		want int
+	}{
+		{
+			in:   time.Monday,
+			want: 0,
+		},
+		{
+			in:   time.Tuesday,
+			want: 1,
+		},
+		{
+			in:   time.Wednesday,
+			want: 2,
+		},
+		{
+			in:   time.Thursday,
+			want: 3,
+		},
+		{
+			in:   time.Friday,
+			want: 4,
+		},
+		{
+			in:   time.Saturday,
+			want: 5,
+		},
+		{
+			in:   time.Sunday,
+			want: 6,
+		},
 	}
-	for in, exp := range cases {
-		out := Weekday(in)
-		if exp != out {
-			t.Errorf("Weekday(%s) => %d; want %d\n", in, out, exp)
+	for i, tt := range cases {
+		out := Weekday(tt.in)
+		if tt.want != out {
+			t.Errorf("[%d] Weekday(%s) => %d; want %d\n", i, tt.in, out, tt.want)
 		}
 	}
 }
