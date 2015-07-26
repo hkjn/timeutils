@@ -18,7 +18,7 @@ func TestWeekday(t *testing.T) {
 	for in, exp := range cases {
 		out := Weekday(in)
 		if exp != out {
-			t.Fatalf("Weekday(%s) => %d; want %d\n", in, out, exp)
+			t.Errorf("Weekday(%s) => %d; want %d\n", in, out, exp)
 		}
 	}
 }
@@ -48,7 +48,7 @@ func TestAsMillis(t *testing.T) {
 	for _, tt := range cases {
 		got := AsMillis(tt.t, tt.offset)
 		if got != tt.want {
-			t.Fatalf("AsMillis(%v, %d) => %d; want %d\n", tt.t, tt.offset, got, tt.want)
+			t.Errorf("AsMillis(%v, %d) => %d; want %d\n", tt.t, tt.offset, got, tt.want)
 		}
 	}
 }
@@ -67,10 +67,10 @@ func TestParse(t *testing.T) {
 	for _, tt := range cases {
 		got, err := Parse(tt.year, tt.month, tt.day, tt.hourMinute, tt.loc)
 		if err != nil {
-			t.Fatalf("Parse(%q, %q, %q, %q, %v) got err %v\n", tt.year, tt.month, tt.day, tt.hourMinute, tt.loc, err)
+			t.Errorf("Parse(%q, %q, %q, %q, %v) got err %v\n", tt.year, tt.month, tt.day, tt.hourMinute, tt.loc, err)
 		}
 		if got != tt.want {
-			t.Fatalf("Parse(%q, %q, %q, %q, %v) => %v; want %v\n", tt.year, tt.month, tt.day, tt.hourMinute, tt.loc, got, tt.want)
+			t.Errorf("Parse(%q, %q, %q, %q, %v) => %v; want %v\n", tt.year, tt.month, tt.day, tt.hourMinute, tt.loc, got, tt.want)
 		}
 	}
 }
@@ -88,7 +88,7 @@ func TestStartOfWeek(t *testing.T) {
 	for in, exp := range cases {
 		out := StartOfWeek(in)
 		if exp != out {
-			t.Fatalf("StartOfWeek(%v) => %v; want %v\n", in, out, exp)
+			t.Errorf("StartOfWeek(%v) => %v; want %v\n", in, out, exp)
 		}
 	}
 }
@@ -112,7 +112,7 @@ func TestDescDuration(t *testing.T) {
 	for in, exp := range cases {
 		out := DescDuration(in)
 		if exp != out {
-			t.Fatalf("DescDuration(%v) => %q; want %q\n", in, out, exp)
+			t.Errorf("DescDuration(%v) => %q; want %q\n", in, out, exp)
 		}
 	}
 }
