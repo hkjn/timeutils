@@ -70,7 +70,7 @@ func TestParse(t *testing.T) {
 			t.Fatalf("Parse(%q, %q, %q, %q, %v) got err %v\n", tt.year, tt.month, tt.day, tt.hourMinute, tt.loc, err)
 		}
 		if got != tt.want {
-			t.Fatalf("Parse(%q, %q, %q, %q, %v) => %v; want %v\n", tt.year, tt.month, tt.day, tt.hourMinute, got, tt.want)
+			t.Fatalf("Parse(%q, %q, %q, %q, %v) => %v; want %v\n", tt.year, tt.month, tt.day, tt.hourMinute, tt.loc, got, tt.want)
 		}
 	}
 }
