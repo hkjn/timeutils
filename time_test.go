@@ -142,25 +142,67 @@ func TestStartOfWeek(t *testing.T) {
 }
 
 func TestDescDuration(t *testing.T) {
-	cases := map[time.Duration]string{
-		time.Millisecond:                 "0.0 sec ago",
-		time.Millisecond * 49:            "0.0 sec ago",
-		time.Millisecond * 50:            "0.1 sec ago",
-		time.Second:                      "1.0 sec ago",
-		time.Millisecond * 500:           "0.5 sec ago",
-		time.Second * 59:                 "59.0 sec ago",
-		time.Second*60 - 1:               "60.0 sec ago",
-		time.Second*60 + 1:               "1.0 min ago",
-		time.Minute:                      "1.0 min ago",
-		time.Minute * 60:                 "1.0 hrs ago",
-		time.Hour*24 - 1:                 "24.0 hrs ago",
-		time.Hour * 24:                   "1.0 days ago",
-		time.Hour*24*10e4 + time.Hour*12: "100000.5 days ago",
+	cases := []struct {
+		in   time.Duration
+		want string
+	}{
+		{
+			in:   time.Millisecond,
+			want: "0.0 sec ago",
+		},
+		{
+			in:   time.Millisecond * 49,
+			want: "0.0 sec ago",
+		},
+		{
+			in:   time.Millisecond * 50,
+			want: "0.1 sec ago",
+		},
+		{
+			in:   time.Second,
+			want: "1.0 sec ago",
+		},
+		{
+			in:   time.Millisecond * 500,
+			want: "0.5 sec ago",
+		},
+		{
+			in:   time.Second * 59,
+			want: "59.0 sec ago",
+		},
+		{
+			in:   time.Second*60 - 1,
+			want: "60.0 sec ago",
+		},
+		{
+			in:   time.Second*60 + 1,
+			want: "1.0 min ago",
+		},
+		{
+			in:   time.Minute,
+			want: "1.0 min ago",
+		},
+		{
+			in:   time.Minute * 60,
+			want: "1.0 hrs ago",
+		},
+		{
+			in:   time.Hour*24 - 1,
+			want: "24.0 hrs ago",
+		},
+		{
+			in:   time.Hour * 24,
+			want: "1.0 days ago",
+		},
+		{
+			in:   time.Hour*24*10e4 + time.Hour*12,
+			want: "100000.5 days ago",
+		},
 	}
-	for in, exp := range cases {
-		out := DescDuration(in)
-		if exp != out {
-			t.Errorf("DescDuration(%v) => %q; want %q\n", in, out, exp)
+	for i, tt := range cases {
+		out := DescDuration(tt.in)
+		if tt.want != out {
+			t.Errorf("[%d] DescDuration(%v) => %q; want %q\n", i, tt.in, out, tt.want)
 		}
 	}
 }
