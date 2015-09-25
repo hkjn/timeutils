@@ -40,7 +40,7 @@ func (d Day) String() string {
 	return d.ToTime().Format("2006-01-02 MST")
 }
 
-// String returns a description of the day object without the TZ.
+// ShortString returns a description of the day object without the TZ.
 func (d Day) ShortString() string {
 	return d.ToTime().Format("2006-01-02")
 }
