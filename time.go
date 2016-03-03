@@ -1,4 +1,8 @@
 // Package timeutils provides some convenience functions around time.
+//
+// Note: I wrote this package a long time ago. I would currently not
+// recommend adding it as a dependency, vs just implementing the
+// simple functions in your own packages. -- hkjn from Q1 2016
 package timeutils
 
 import (
